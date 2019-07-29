@@ -2,7 +2,8 @@
 2. I read the relevant message in line52--line70;
 3. I define three bool variables of state: too_closed, change_left_lane, change_right_lane, in line137--line139, which represents whether the car is too close with others, whether to change the left lane, the right lane, respectively;
 4. In the following part, I mainly do two things: one is set the values of the three variable above, the other is draw the trajectory;
-5. I define a variable "v_lane" to representate all the vehicles' lane;
-5. In line148--line192, I search the next action;
-6. In line195--line228, I calculate the next lane and velocity;
-7. In 230--line325, I generate the trajectory.
+5. I define the variable "v_lane" and "check_car_s" to representate all the vehicles' lanes and the distances between the car to others, respectively;
+6. I first raise a for loop to set the "too_closed";
+7. Then I raise another for loop to set the "change_lane_left" and "change_lane_right";
+8. Then I use the three variables to set the variable of "lane", which is used to draw the trajectory;
+9. I draw the trajectory finally.
