@@ -140,64 +140,71 @@ int main() {
           
           
           std::map<int, int> v_lane;
+          std::map<int, double> check_car_s;
           for(int i=0; i<sensor_fusion.size(); i++)
           {
               double d = sensor_fusion[i][6];
               v_lane[i] = lane_num(d);
-          }
-          if(v_lane.size() != 0)
-          {
-              for(int i=0; i<v_lane.size(); i++)
+              double vx = sensor_fusion[i][3];
+              double vy = sensor_fusion[i][4];
+              double check_speed = sqrt(vx*vx + vy*vy);
+              check_car_s[i] = sensor_fusion[i][5];
+              check_car_s[i] += (double)prev_size * 0.02 * check_speed;
+              if(v_lane[i] == car_lane)
               {
-                  double vx = sensor_fusion[i][3];
-                  double vy = sensor_fusion[i][4];
-                  double check_speed = sqrt(vx*vx + vy*vy);
-                  double check_car_s = sensor_fusion[i][5];
-                  check_car_s += (double)prev_size * 0.02 * check_speed;
-                  if(v_lane[i] == car_lane)
+                  if(check_car_s[i] > car_s && check_car_s[i] - car_s < 30)
                   {
-                      if(check_car_s > car_s && check_car_s - car_s < 30)
-                      {
-                          too_closed = true;
-                      }
+                      too_closed = true;
                   }
+              }
+          }
+         
+          if(too_closed == true)
+          {
+              change_lane_left = true;
+              change_lane_right = true;
+              for(int i=0; i<v_lane.size(); i++) {
+                  if(car_lane == 0) change_lane_left = false;
+                  else if(car_lane == 2) change_lane_right = false;
                   if(car_lane - v_lane[i] == 1)
                   {
-                      if(std::abs(check_car_s - car_s) < 50)
+                      if(check_car_s[i] - car_s < 50 && check_car_s[i] - car_s > -20)
                       {
                           change_lane_left = false;
                       }
                   }else if(car_lane - v_lane[i] == -1)
                   {
-                      if(std::abs(check_car_s - car_s) < 50)
+                      if(check_car_s[i] - car_s < 50 && check_car_s[i] - car_s > -20)
                       {
                           change_lane_right = false;
                       }
-                  }
-                  
+                  }        
               }
           }
-          std::cout<<"car_lane is: "<<car_lane<<std::endl;
-          lane = lane * car_lane;
-          if(too_closed == true)
-          {
+          std::cout<<"total size is: "<<v_lane.size()<<std::endl;
+          std::cout<<"left is: "<<change_lane_left<<std::endl;
+          std::cout<<"right is: "<<change_lane_right<<std::endl;
+          //lane = lane * car_lane;
+          if(too_closed == true) {
               if(change_lane_left == true)
               {
-                  lane = lane * (car_lane - 1);
+                  if(car_lane == 1) lane = 0;
+                  else if(car_lane == 2) lane = 1;
               }
               else if(change_lane_right == true)
               {
-                  lane = lane * (car_lane + 1);
+                  if(car_lane == 1) lane = 2;
+                  else if(car_lane == 0) lane = 1;
               }
               else
               {
-                  lane = lane * (car_lane);
+                  lane = car_lane;
                   ref_vel -= 0.224;
               } 
           }else if(ref_vel < 47.5)
           {
               ref_vel += 0.224;
-              //lane = lane * car_lane;
+              lane = car_lane;
           }
 
           

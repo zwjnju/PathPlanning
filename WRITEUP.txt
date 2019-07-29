@@ -1,7 +1,8 @@
-1. I define a function "lane_num" to get the car_lane, which is 0 or 1 or 2(line18--line32);
-2. I read the relevant message in line127--line136;
-3. I define three bool variables of state in line137--line139;
-4. I define a variable "v_lane" to representate all the vehicles' lane;
+1. I define a function "lane_num" to get the car_lane, which is 0(left) or 1(middle) or 2(right).(line18--line32);
+2. I read the relevant message in line52--line70;
+3. I define three bool variables of state: too_closed, change_left_lane, change_right_lane, in line137--line139, which represents whether the car is too close with others, whether to change the left lane, the right lane, respectively;
+4. In the following part, I mainly do two things: one is set the values of the three variable above, the other is draw the trajectory;
+5. I define a variable "v_lane" to representate all the vehicles' lane;
 5. In line148--line192, I search the next action;
 6. In line195--line228, I calculate the next lane and velocity;
 7. In 230--line325, I generate the trajectory.
